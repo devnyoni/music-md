@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💎 NYONI-XMD MUSIC PLAYER</title>
-
+    <title>NYONI-XMD MUSIC PLAYER</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Oxanium:wght@400;600;700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --primary: #ff0000;
@@ -18,7 +17,8 @@
 
         body {
             font-family: 'Oxanium', sans-serif;
-            background: radial-gradient(circle at center, #1a0000 0%, #000000 100%);
+            background: var(--dark-bg);
+            background-image: radial-gradient(circle at center, #1a0000 0%, #000000 100%);
             color: white;
             margin: 0;
             padding: 15px;
@@ -30,7 +30,8 @@
 
         .logo-container {
             text-align: center;
-            margin: 20px 0;
+            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         .user-logo {
@@ -49,17 +50,45 @@
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
             letter-spacing: 3px;
         }
 
         .container {
             width: 100%;
-            max-width: 600px;
+            max-width: 700px;
             background: var(--card-bg);
             padding: 25px;
             border-radius: 20px;
             border: 1px solid #333;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #0a0a0a;
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: #222;
+            color: #aaa;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Oxanium', sans-serif;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
         }
 
         .search-box {
@@ -76,6 +105,7 @@
             background: #000;
             color: white;
             font-size: 1rem;
+            outline: none;
         }
 
         .search-btn {
@@ -94,6 +124,11 @@
             border-radius: 15px;
             margin-bottom: 15px;
             border-left: 5px solid var(--secondary);
+            transition: transform 0.3s;
+        }
+
+        .track-card:hover {
+            transform: translateY(-5px);
         }
 
         .track-top {
@@ -113,6 +148,7 @@
         .track-title {
             font-weight: bold;
             font-size: 1.1rem;
+            color: #fff;
         }
 
         .track-artist {
@@ -122,20 +158,25 @@
 
         audio {
             width: 100%;
+            height: 40px;
             margin-bottom: 10px;
-            filter: invert(1) hue-rotate(180deg) brightness(1.4);
+            filter: invert(1) hue-rotate(180deg) brightness(1.5);
         }
 
-        .download-btn {
+        .full-song-btn {
             background: var(--secondary);
             color: black;
-            padding: 10px 18px;
+            padding: 10px 20px;
             text-decoration: none;
             border-radius: 8px;
             font-weight: bold;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            cursor: pointer;
+            border: none;
+            font-family: 'Oxanium', sans-serif;
+            margin-right: 10px;
         }
 
         .loader {
@@ -145,97 +186,378 @@
             margin: 20px;
             font-weight: bold;
         }
+
+        .my-music-list {
+            margin-top: 20px;
+        }
+
+        .add-music-btn {
+            background: #333;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Oxanium', sans-serif;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .instructions {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            border-left: 3px solid var(--primary);
+        }
+
+        .instructions h4 {
+            margin-top: 0;
+            color: var(--secondary);
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        .upload-area {
+            border: 2px dashed #444;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            background: #0a0a0a;
+            display: none;
+        }
+
+        .upload-area.active {
+            display: block;
+        }
+
+        .upload-area input {
+            background: transparent;
+            border: none;
+            margin: 15px 0;
+        }
     </style>
 </head>
 <body>
-
     <div class="logo-container">
-        <img 
-            src="https://cdn.phototourl.com/uploads/2026-01-11-adfb9fd6-57c9-4ad8-b4d6-4b4a96d96dda.jpg"
-            alt="NYONI LOGO"
-            class="user-logo"
-        >
-        <div class="brand-name">NYONI MUSIC</div>
-        <p style="color: var(--secondary); font-size: 0.75rem; letter-spacing: 2px;">
-            AGGRESSIVE MUSIC SYSTEM
-        </p>
+        <!-- Your logo - Replace with direct image link -->
+        <img src="https://i.ibb.co/VWVm9Y6/1000260846.jpg" alt="NYONI LOGO" class="user-logo">
+        <div class="brand-name">NYONI-XMD MUSIC</div>
+        <p style="color: var(--secondary); font-size: 0.7rem; letter-spacing: 2px;">AGGRESSIVE MUSIC SYSTEM</p>
     </div>
 
     <div class="container">
-        <div class="search-box">
-            <input type="text" id="query" placeholder="Type song name here...">
-            <button class="search-btn" onclick="searchMusic()">
-                <i class="fas fa-search"></i>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('search')">
+                <i class="fas fa-search"></i> SEARCH MUSIC
+            </button>
+            <button class="tab-btn" onclick="switchTab('myMusic')">
+                <i class="fas fa-music"></i> MY MUSIC
+            </button>
+            <button class="tab-btn" onclick="switchTab('addMusic')">
+                <i class="fas fa-plus-circle"></i> ADD MUSIC
             </button>
         </div>
 
-        <div id="loader" class="loader">PLEASE WAIT... ⚡</div>
-        <div id="results"></div>
+        <!-- SEARCH TAB -->
+        <div id="searchTab" class="tab-content">
+            <div class="search-box">
+                <input type="text" id="query" placeholder="Type a song name or artist...">
+                <button class="search-btn" onclick="searchMusic()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div id="loader" class="loader">PLEASE WAIT... ⚡</div>
+            <div id="results"></div>
+        </div>
+
+        <!-- MY MUSIC TAB -->
+        <div id="myMusicTab" class="tab-content" style="display: none;">
+            <div class="my-music-list" id="myMusicList">
+                <!-- Your uploaded music will appear here -->
+                <p style="text-align: center; color: #888;">No music added yet. Go to "ADD MUSIC" to upload your songs.</p>
+            </div>
+        </div>
+
+        <!-- ADD MUSIC TAB -->
+        <div id="addMusicTab" class="tab-content" style="display: none;">
+            <button class="add-music-btn" onclick="showUploadArea()">
+                <i class="fas fa-cloud-upload-alt"></i> UPLOAD YOUR OWN MP3 FILES
+            </button>
+            
+            <div id="uploadArea" class="upload-area">
+                <h3><i class="fas fa-upload"></i> Upload MP3 File</h3>
+                <p>Select an MP3 file from your computer:</p>
+                <input type="file" id="mp3Upload" accept=".mp3,audio/*">
+                <input type="text" id="songTitle" placeholder="Song title">
+                <input type="text" id="songArtist" placeholder="Artist name">
+                <button class="full-song-btn" onclick="uploadMusic()">
+                    <i class="fas fa-upload"></i> UPLOAD & ADD
+                </button>
+            </div>
+
+            <div class="instructions">
+                <h4><i class="fas fa-info-circle"></i> HOW TO ADD FULL SONGS:</h4>
+                <ul>
+                    <li>Upload MP3 files from your computer (click the upload button above)</li>
+                    <li>OR use direct links to MP3 files hosted online</li>
+                    <li>SoundCloud search may find full songs from independent artists</li>
+                    <li>For popular songs, consider linking to Spotify/Apple Music</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOW TO GET FULL SONGS INFO -->
+    <div class="container">
+        <h3 style="color: var(--secondary); text-align: center;"><i class="fas fa-lightbulb"></i> HOW TO GET FULL SONGS</h3>
+        <div class="instructions">
+            <p>To play full songs in your player, you have these options:</p>
+            <ol>
+                <li><strong>Upload your own MP3 files</strong> - Use the "ADD MUSIC" tab to upload songs you own</li>
+                <li><strong>SoundCloud links</strong> - Some artists allow full streaming via SoundCloud API</li>
+                <li><strong>External links</strong> - Link to Spotify, Apple Music, or YouTube for full songs</li>
+            </ol>
+            <p style="color: var(--primary); font-weight: bold;">
+                ⚠️ Note: Streaming full copyrighted songs without permission is illegal. 
+                Always respect artists' rights.
+            </p>
+        </div>
     </div>
 
     <script>
-        async function searchMusic() {
-            const query = document.getElementById('query').value.trim();
-            const resultsDiv = document.getElementById('results');
-            const loader = document.getElementById('loader');
+        let currentTab = 'search';
+        let myMusic = JSON.parse(localStorage.getItem('nyoniMusic')) || [];
 
-            if (!query) {
-                alert("Please enter a song name!");
+        // Switch between tabs
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Hide all tabs
+            document.getElementById('searchTab').style.display = 'none';
+            document.getElementById('myMusicTab').style.display = 'none';
+            document.getElementById('addMusicTab').style.display = 'none';
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // If switching to My Music tab, load the music
+            if (tabName === 'myMusic') {
+                loadMyMusic();
+            }
+        }
+
+        // Show upload area
+        function showUploadArea() {
+            document.getElementById('uploadArea').classList.add('active');
+        }
+
+        // Upload music from computer
+        function uploadMusic() {
+            const fileInput = document.getElementById('mp3Upload');
+            const title = document.getElementById('songTitle').value || 'Unknown Song';
+            const artist = document.getElementById('songArtist').value || 'Unknown Artist';
+            
+            if (!fileInput.files[0]) {
+                alert('Please select an MP3 file first!');
                 return;
             }
+            
+            const file = fileInput.files[0];
+            
+            // Create a local URL for the file
+            const musicUrl = URL.createObjectURL(file);
+            
+            // Add to my music list
+            myMusic.push({
+                trackName: title,
+                artistName: artist,
+                previewUrl: musicUrl,
+                artworkUrl100: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&h=200&fit=crop'
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('nyoniMusic', JSON.stringify(myMusic));
+            
+            // Reset form
+            fileInput.value = '';
+            document.getElementById('songTitle').value = '';
+            document.getElementById('songArtist').value = '';
+            document.getElementById('uploadArea').classList.remove('active');
+            
+            alert('Song added successfully! Switch to "MY MUSIC" to play it.');
+        }
 
+        // Load user's uploaded music
+        function loadMyMusic() {
+            const myMusicList = document.getElementById('myMusicList');
+            
+            if (myMusic.length === 0) {
+                myMusicList.innerHTML = '<p style="text-align: center; color: #888;">No music added yet. Go to "ADD MUSIC" to upload your songs.</p>';
+                return;
+            }
+            
+            myMusicList.innerHTML = '';
+            
+            myMusic.forEach((track, index) => {
+                const card = document.createElement('div');
+                card.className = 'track-card';
+                card.innerHTML = `
+                    <div class="track-top">
+                        <img src="${track.artworkUrl100}" alt="cover">
+                        <div class="track-details">
+                            <div class="track-title">${track.trackName}</div>
+                            <div class="track-artist">${track.artistName}</div>
+                        </div>
+                    </div>
+                    <audio controls src="${track.previewUrl}"></audio>
+                    <div style="text-align: right;">
+                        <button class="full-song-btn" onclick="playFullSong('${track.previewUrl}')">
+                            <i class="fas fa-play"></i> PLAY FULL SONG
+                        </button>
+                        <button class="full-song-btn" style="background: #ff5555;" onclick="removeSong(${index})">
+                            <i class="fas fa-trash"></i> REMOVE
+                        </button>
+                    </div>
+                `;
+                myMusicList.appendChild(card);
+            });
+        }
+
+        // Remove song from My Music
+        function removeSong(index) {
+            if (confirm('Are you sure you want to remove this song?')) {
+                myMusic.splice(index, 1);
+                localStorage.setItem('nyoniMusic', JSON.stringify(myMusic));
+                loadMyMusic();
+            }
+        }
+
+        // Play full song
+        function playFullSong(url) {
+            // This will play the full song from the uploaded file
+            const audio = new Audio(url);
+            audio.play();
+        }
+
+        // Search music using multiple APIs
+        async function searchMusic() {
+            const query = document.getElementById('query').value;
+            const resultsDiv = document.getElementById('results');
+            const loader = document.getElementById('loader');
+            
+            if (!query) {
+                alert("Please type a song name!");
+                return;
+            }
+            
             resultsDiv.innerHTML = "";
             loader.style.display = "block";
-
+            
             try {
-                const response = await fetch(
-                    `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=15`
-                );
+                // Try iTunes API first (30-second previews)
+                const response = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=10`);
                 const data = await response.json();
-
+                
                 loader.style.display = "none";
-
-                if (!data.results || data.results.length === 0) {
-                    resultsDiv.innerHTML = "<p style='text-align:center;'>No results found.</p>";
+                
+                if (data.results.length === 0) {
+                    resultsDiv.innerHTML = `<p style='text-align:center;'>No music found. Try another name.</p>`;
                     return;
                 }
-
+                
                 data.results.forEach(track => {
-                    const card = document.createElement("div");
-                    card.className = "track-card";
-
+                    const card = document.createElement('div');
+                    card.className = 'track-card';
                     card.innerHTML = `
                         <div class="track-top">
                             <img src="${track.artworkUrl100}" alt="cover">
-                            <div>
+                            <div class="track-details">
                                 <div class="track-title">${track.trackName}</div>
                                 <div class="track-artist">${track.artistName}</div>
                             </div>
                         </div>
-
                         <audio controls src="${track.previewUrl}"></audio>
-
-                        <div style="text-align:right;">
-                            <a class="download-btn" href="${track.previewUrl}">
-                                <i class="fas fa-music"></i> Preview
-                            </a>
+                        <div style="text-align: right;">
+                            <button class="full-song-btn" onclick="searchFullSong('${track.trackName} ${track.artistName}')">
+                                <i class="fas fa-external-link-alt"></i> FIND FULL SONG
+                            </button>
                         </div>
                     `;
-
                     resultsDiv.appendChild(card);
                 });
-
-            } catch (err) {
+                
+            } catch (error) {
                 loader.style.display = "none";
-                alert("Network error. Please try again.");
-                console.error(err);
+                alert("Network error! Please try again.");
+                console.error(error);
             }
         }
 
-        document.getElementById("query").addEventListener("keypress", e => {
-            if (e.key === "Enter") searchMusic();
+        // Search for full song on external platforms
+        function searchFullSong(searchTerm) {
+            // Open links to search for the full song on various platforms
+            const encodedTerm = encodeURIComponent(searchTerm);
+            
+            // Create a menu of options
+            const platform = prompt(
+                `Search for full song on:\n\n1. YouTube\n2. Spotify\n3. SoundCloud\n4. Apple Music\n\nEnter number (1-4):`
+            );
+            
+            let url = '';
+            
+            switch(platform) {
+                case '1':
+                    url = `https://www.youtube.com/results?search_query=${encodedTerm}`;
+                    break;
+                case '2':
+                    url = `https://open.spotify.com/search/${encodedTerm}`;
+                    break;
+                case '3':
+                    url = `https://soundcloud.com/search?q=${encodedTerm}`;
+                    break;
+                case '4':
+                    url = `https://music.apple.com/us/search?term=${encodedTerm}`;
+                    break;
+                default:
+                    return;
+            }
+            
+            window.open(url, '_blank');
+        }
+
+        // Enter key support for search
+        document.getElementById('query').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') searchMusic();
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load any existing music
+            if (myMusic.length > 0) {
+                console.log(`Loaded ${myMusic.length} songs from your collection`);
+            }
         });
     </script>
-
 </body>
 </html>
