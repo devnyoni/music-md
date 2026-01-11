@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💎 NYONI-XMD PREMIUM MUSIC</title>
+    <title>💎 NYONI-XMD PREMIUM MUSIC PLAYER</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Oxanium:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -18,27 +18,54 @@
         body {
             font-family: 'Oxanium', sans-serif;
             background: var(--dark-bg);
+            background-image: radial-gradient(circle at center, #1a0000 0%, #000000 100%);
             color: white;
             margin: 0;
             padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
 
-        .header { text-align: center; margin: 20px 0; }
-        .logo {
+        /* Logo Styling */
+        .logo-container {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .user-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 20px var(--primary);
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .brand-name {
             font-family: 'Orbitron', sans-serif;
-            font-size: 2.2rem;
+            font-size: 2rem;
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 3px;
         }
 
-        .search-container {
+        .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .search-box {
             display: flex;
             gap: 10px;
             margin-bottom: 25px;
@@ -48,159 +75,188 @@
             flex: 1;
             padding: 15px;
             border-radius: 12px;
-            border: 1px solid #333;
-            background: #111;
+            border: 1px solid #444;
+            background: #000;
             color: white;
             font-size: 1rem;
             outline: none;
-        }
-
-        input:focus { border-color: var(--secondary); box-shadow: 0 0 10px rgba(0, 255, 255, 0.2); }
-
-        .search-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        /* Music List Container */
-        #music-list {
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .song-card {
-            background: var(--card-bg);
-            margin-bottom: 15px;
-            padding: 15px;
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            border: 1px solid #222;
             transition: 0.3s;
         }
 
-        .song-card:hover { border-color: var(--secondary); }
+        input:focus { border-color: var(--secondary); box-shadow: 0 0 10px rgba(0,255,255,0.2); }
 
-        .song-info { display: flex; align-items: center; gap: 15px; }
-        .song-info img { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; border: 1px solid var(--primary); }
-        .song-details { flex: 1; }
-        .song-title { font-weight: bold; font-size: 1.1rem; color: #fff; }
-        .song-artist { font-size: 0.85rem; color: #888; }
-
-        /* Custom Audio Player */
-        audio {
-            width: 100%;
-            height: 35px;
-            filter: invert(1) hue-rotate(180deg) brightness(1.5); /* Makes it look modern */
+        .search-btn {
+            padding: 0 25px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: 0.3s;
         }
 
-        .action-btns {
+        .search-btn:hover { transform: scale(1.05); background: #cc0000; }
+
+        /* Music Card Styling */
+        .track-card {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--secondary);
+            transition: 0.3s;
+        }
+
+        .track-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+
+        .track-top {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .track-top img {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 1px solid #333;
+        }
+
+        .track-details { flex: 1; }
+        .track-title { font-weight: bold; font-size: 1.1rem; color: #fff; margin-bottom: 5px; }
+        .track-artist { font-size: 0.9rem; color: #aaa; }
+
+        /* Modern Audio Player */
+        audio {
+            width: 100%;
+            height: 40px;
+            margin-bottom: 10px;
+            filter: invert(1) hue-rotate(180deg) brightness(1.5);
+        }
+
+        .action-area {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 5px;
         }
 
         .download-btn {
-            background: linear-gradient(90deg, #00c6ff, #0072ff);
-            color: white;
-            text-decoration: none;
+            background: var(--secondary);
+            color: black;
             padding: 10px 20px;
+            text-decoration: none;
             border-radius: 8px;
             font-weight: bold;
             font-size: 0.85rem;
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: 0.3s;
         }
 
-        .download-btn:hover { transform: scale(1.05); }
+        .download-btn:hover { background: #00cccc; transform: translateY(-2px); }
 
-        .loader { display: none; margin: 20px; color: var(--secondary); animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+        .loader {
+            display: none;
+            text-align: center;
+            color: var(--secondary);
+            font-weight: bold;
+            margin: 20px;
+            letter-spacing: 2px;
+        }
+
+        footer {
+            margin-top: 30px;
+            color: #555;
+            font-size: 0.8rem;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1 class="logo">NYONI-XMD</h1>
-        <p style="color: #666; font-size: 0.7rem; letter-spacing: 3px;">DIRECT MUSIC STREAM & DOWNLOAD</p>
+    <div class="logo-container">
+        <img src="https://i.ibb.co/VWVm9Y6/1000260846.jpg" alt="NYONI LOGO" class="user-logo">
+        <div class="brand-name">NYONI-MUSIC</div>
+        <p style="color: var(--secondary); font-size: 0.7rem; letter-spacing: 2px;">PREMIUM STREAMING & DOWNLOAD</p>
     </div>
 
-    <div class="search-container">
-        <input type="text" id="searchInput" placeholder="Search song or artist name...">
-        <button class="search-btn" onclick="searchMusic()"><i class="fas fa-search"></i></button>
-    </div>
-
-    <div id="loader" class="loader">💎 FETCHING PREMIUM RESULTS...</div>
-
-    <div id="music-list">
+    <div class="container">
+        <div class="search-box">
+            <input type="text" id="query" placeholder="Search song, artist or album...">
+            <button class="search-btn" onclick="searchMusic()">
+                <i class="fas fa-search"></i>
+            </button>
         </div>
+
+        <div id="loader" class="loader">💎 SEARCHING DATABASE...</div>
+        <div id="results"></div>
+    </div>
+
+    <footer>
+        <p>© 2024 NYONI-XMD | AGGRESSIVE MUSIC SYSTEM</p>
+    </footer>
 
     <script>
         async function searchMusic() {
-            const query = document.getElementById('searchInput').value;
-            const musicList = document.getElementById('music-list');
+            const query = document.getElementById('query').value;
+            const resultsDiv = document.getElementById('results');
             const loader = document.getElementById('loader');
 
-            if (!query) return alert("Enter song name!");
+            if (!query) return alert("Type something to search!");
 
-            musicList.innerHTML = "";
+            resultsDiv.innerHTML = "";
             loader.style.display = "block";
 
             try {
-                // Using Deezer Search API (Official, Direct, and Reliable)
-                // This gives us: High quality titles, covers, and direct MP3 streams
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.deezer.com/search?q=${query}&limit=10`)}`);
+                // Using Deezer API for high quality results and direct streaming
+                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.deezer.com/search?q=${query}&limit=15`)}`);
                 const rawData = await response.json();
                 const data = JSON.parse(rawData.contents);
 
                 loader.style.display = "none";
 
                 if (!data.data || data.data.length === 0) {
-                    musicList.innerHTML = "<p style='text-align:center;'>No music found. Try another name.</p>";
+                    resultsDiv.innerHTML = "<p style='text-align:center;'>❌ No music found.</p>";
                     return;
                 }
 
                 data.data.forEach(track => {
                     const card = document.createElement('div');
-                    card.className = 'song-card';
+                    card.className = 'track-card';
                     card.innerHTML = `
-                        <div class="song-info">
+                        <div class="track-top">
                             <img src="${track.album.cover_medium}" alt="cover">
-                            <div class="song-details">
-                                <div class="song-title">${track.title}</div>
-                                <div class="song-artist">${track.artist.name}</div>
+                            <div class="track-details">
+                                <div class="track-title">${track.title}</div>
+                                <div class="track-artist">${track.artist.name}</div>
                             </div>
                         </div>
                         
                         <audio controls src="${track.preview}"></audio>
                         
-                        <div class="action-btns">
-                            <span style="font-size: 0.7rem; color: #444;">Full Quality HQ</span>
+                        <div class="action-area">
+                            <span style="font-size: 0.7rem; color: #666;">Full Quality HQ</span>
                             <a href="${track.preview}" download="${track.title}.mp3" class="download-btn">
                                 <i class="fas fa-download"></i> DOWNLOAD MP3
                             </a>
                         </div>
                     `;
-                    musicList.appendChild(card);
+                    resultsDiv.appendChild(card);
                 });
 
             } catch (error) {
                 loader.style.display = "none";
-                alert("Connection failed. Please try again.");
+                alert("Connection Error. Try again!");
                 console.error(error);
             }
         }
 
-        // Allow searching with "Enter" key
-        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+        // Search by pressing Enter
+        document.getElementById('query').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') searchMusic();
         });
     </script>
